@@ -30,11 +30,12 @@ library(ggtext)
 # write_csv(raw_data, here::here("data", "nyc311_2025.csv"))
 
 manhattan_url <- "https://data.cityofnewyork.us/resource/9nt8-h7nd.geojson?$where=boroname='Manhattan'"
-manhattan <- st_read(manhattan_url)
+manhattan <- st_read(manhattan_url, quiet = TRUE)
 
 # Clean Data --------------------------------------------------------------
 
 complaints <- read_csv(here::here("data", "nyc311_2025.csv")) |> filter(borough == 'MANHATTAN')
+
 
 # complaints_by_type <- complaints |> 
 #   group_by(agency_name, complaint_type, descriptor) |> 

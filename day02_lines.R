@@ -48,33 +48,80 @@ manhattan <- st_read(manhattan_url)
 
 # Clean Data --------------------------------------------------------------
 
-complaints <- read_csv(here::here("data", "nyc311_2025.csv")) |> filter(borough == 'MANHATTAN')
-streets <- st_read(here::here("data", "manhattan_streets.gpkg"))
 
-# complaints_by_type <- complaints |> 
-#   group_by(agency_name, complaint_type, descriptor) |> 
-#   summarise(num_complaints = n())
+complaints <- read_csv(here::here("data", "nyc311_2025.csv")) |> filter(borough == 'MANHATTAN') |> 
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326) |> 
+  st_transform(crs = 2263)
+streets <- st_read(here::here("data", "manhattan_streets.gpkg")) |> st_transform(crs = 2263)
 
-ice_cream <- complaints |> filter(str_detect(descriptor, "Ice Cream")) |> 
-  filter(created_date < mdy("01012026"))
+# All complaints
+nearest_street <- st_nearest_feature(complaints, streets)
+
+# streets$physicalid[nearest_street]
+
+complaints_sf <- complaints |> 
+  mutate(physicalid = streets$physicalid[nearest_street])
+
+complaint_count <- complaints_sf |> 
+  st_drop_geometry() |> 
+  count(physicalid)
+
+streets_sf <- streets |> 
+  left_join(complaint_count, by = "physicalid") |> 
+  replace_na(list(n = 0)) |> 
+  select(stname_label, rw_type, full_street_name, n, geom)
+
+# Potholes
+
+potholes <- complaints |> 
+  filter(
+    complaint_type == 'Street Condition'&
+    descriptor == "Pothole"
+  )
+
+potholes_nearest_street <- st_nearest_feature(potholes, streets)
+
+potholes_sf <- potholes |> 
+  mutate(physicalid = streets$physicalid[potholes_nearest_street])
+
+pothole_count <- potholes_sf |> 
+  st_drop_geometry() |> 
+  count(physicalid)
+
+potholes_street_sf <- streets |> 
+  left_join(pothole_count, by = "physicalid") |> 
+  replace_na(list(n = 0)) |> 
+  select(stname_label, rw_type, full_street_name, n, geom)
+
 
 
 # Make Map ----------------------------------------------------------------
 
 bsky_logo_path <- here::here("img", "bsky_logo.png")
-pink <- "deeppink"
-ice_cream_sf <- st_as_sf(ice_cream, coords = c("longitude", "latitude"), crs = 4326)
+line_color <- "navyblue"
+
+
+
+# All complaints
 
 p1 <- ggplot() +
   geom_sf(data = manhattan, fill = "grey95", color = "grey60") +
-  geom_sf(data = ice_cream_sf, size = 1.00, alpha = 0.6, color = pink) +
-  coord_sf(xlim = c(-74.025, -73.905), ylim = c(40.695, 40.880)) +
+  geom_sf(
+    data = streets_sf |> arrange(n) |> filter(n > 0),
+    aes(color = n, linewidth = n)
+    ) +
+  # scale_color_stepsn(
+  #   colors = complaint_pal,
+  #   breaks = c()
+  # )
+  # geom_sf(data = complaints_sf |> head(1000), size = 1.00, alpha = 0.6, color = pink) +
+  coord_sf(xlim = c(-74.025, -73.905), ylim = c(40.695, 40.880), default_crs = 4326) +
   theme_void() +
   labs(
     title    = glue::glue(
-      "<span style='color:{pink}'>Ice Cream Truck</span> Noise Complaints<br> in Manhattan"
+      "What streets have the most <br><span style='color:{line_color}'>311 Complaints</span> in Manhattan?"
     ),
-    subtitle = glue::glue(" There were {nrow(ice_cream_sf)} complaints in 2025.<br> Each point is a complaint, not an ice cream truck."),
+    subtitle = glue::glue(" There were {sum(streets_sf$n)} complaints in 2025.<br> Each point is a complaint, not an ice cream truck."),
     caption  = glue::glue(
       "Data: NYC Open Data / NYC 311  <br>  ",
       "#30DayMapChallenge 2026 Day 01 \u2013 Points  <br>",
@@ -90,6 +137,58 @@ p1 <- ggplot() +
 
 plot(p1)
 
+
+# Potholes
+pothole_pal <- c(
+  "#fec44f", 
+  # "#fe9929", 
+  "#ec7014", 
+  # "#cc4c02", 
+  "#662506"
+  )
+
+
+
+p2 <- ggplot() +
+  geom_sf(data = manhattan, fill = "grey95", color = "grey60") +
+  geom_sf(data = streets_sf, color = "grey80") +
+  geom_sf(
+    data = potholes_street_sf |> arrange(n) |> filter(n > 0),
+    aes(color = n, linewidth = n)
+  ) +
+  scale_color_stepsn(
+    colors = pothole_pal,
+    breaks = c(2,4,8,16),
+    limits = c(1, 24),
+    transform = "log2",
+    name = "Potholes per\nstreet segment"
+  ) +
+  scale_linewidth(range = c(0.3, 1.4), guide = "none") +  
+  coord_sf(xlim  = c(-74.025, -73.905), ylim = c(40.695, 40.880), default_crs = 4326) +
+  theme_void() +
+  labs(
+    title = "Which streets deal<br>with potholes the most?",
+    subtitle = glue::glue("There were {format(sum(potholes_street_sf$n), big.mark = ',')} complaints in 2025."),
+    caption  = glue::glue(
+      "Data: NYC Open Data / NYC 311  <br>  ",
+      "#30DayMapChallenge 2026 Day 02 \u2013 Lines  <br>",
+      "<img src='{bsky_logo_path}' width='12'/> @mel-likes-maps.bsky.social"
+    )
+  )  +
+  theme(
+    plot.title = element_markdown(color = "grey20", face = "bold", size = 16),
+    plot.subtitle = element_markdown(color = "grey40", face = "bold", size = 11, lineheight = 1.2),
+    plot.caption = element_markdown(color = "grey55", size = 7.5, hjust = 0, margin = margin(t = 10))
+  )
+  
+
+
+plot(p2)
+
 # Save --------------------------------------------------------------------
-ggsave(here::here("output", "day01_points.png"), p1, width = 6, height = 9, dpi = 300, bg = "white")
+ggsave(here::here("output", "day02_lines.png"), p2, width = 6, height = 9, dpi = 300, bg = "white")
+
+
+
+
 

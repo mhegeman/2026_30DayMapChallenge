@@ -40,7 +40,8 @@ complaints <- read_csv(here::here("data", "nyc311_2025.csv")) |> filter(borough 
 #   group_by(agency_name, complaint_type, descriptor) |> 
 #   summarise(num_complaints = n())
 
-ice_cream <- complaints |> filter(str_detect(descriptor, "Ice Cream"))
+ice_cream <- complaints |> filter(str_detect(descriptor, "Ice Cream")) |> 
+  filter(created_date < mdy("01012026"))
 
 
 # Make Map ----------------------------------------------------------------

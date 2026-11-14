@@ -1,2 +1,91 @@
-# 2026_30DayMapChallenge
-Scripts for making the maps for the 30 Day Map Challenge
+# 2026 #30DayMapChallenge
+
+My maps for the [#30DayMapChallenge](https://30daymapchallenge.com/), November 1–30, 2026: one map a day, each with its own prompt. My goals for participating in this challenge is to improve my mapping skills using R, ArcGIS, and Python. 
+
+Most maps are built from a few public datasets I keep coming back to, especially **NYC 311**. Daily posts go up on Bluesky at [@mel-likes-maps.bsky.social](https://bsky.app/profile/mel-likes-maps.bsky.social).
+
+## The maps
+
+Click a map to see the script behind it.
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <a href="day01_points.R"><img src="output/day01_points.png" width="250" alt="Map of Manhattan with pink dots for ice cream truck noise complaints"></a><br>
+      <b>Day 1 · Points</b><br>
+      443 ice cream truck noise complaints in Manhattan
+    </td>
+    <td align="center" width="33%">
+      <a href="day02_lines.R"><img src="output/day02_lines.png" width="250" alt="Manhattan streets colored by pothole complaints"></a><br>
+      <b>Day 2 · Lines</b><br>
+      Manhattan streets colored by pothole complaints
+    </td>
+    <td align="center" width="33%">
+      <a href="day03_polygons.R"><img src="output/day03_polygons.png" width="250" alt="Manhattan neighborhoods colored by their top 311 complaint"></a><br>
+      <b>Day 3 · Polygons</b><br>
+      Each Manhattan neighborhood's top 311 complaint
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href="day04_clusters.R"><img src="output/day04_clusters.png" width="250" alt="Half court with clusters of the Valkyries' made shots"></a><br>
+      <b>Day 4 · Clusters</b><br>
+      Valkyries' made shots in the 2026 WNBA playoffs
+    </td>
+    <td align="center">
+      <a href="day05_sight.R"><img src="output/day05_sight.jpg" width="250" alt="Catskill Park shaded by how many fire towers can be seen"></a><br>
+      <b>Day 5 · Senses: Sight</b><br>
+      How many Catskill fire towers can you see from here?
+    </td>
+    <td align="center">
+      <a href="day06_vintage.R"><img src="output/day06_vintage.png" width="250" alt="Vintage topo-style map of Catskill fire towers"></a><br>
+      <b>Day 6 · Vintage</b><br>
+      The Catskills' lost fire towers, 1930s topo style
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href="day07_10minutes.R"><img src="output/day07_10minutes.png" width="250" alt="Globe with 10-minute cells at four latitudes"></a><br>
+      <b>Day 7 · 10 minute map</b><br>
+      10 minutes of arc, from the equator to 85°N
+    </td>
+    <td align="center">
+      <a href="day10_prompting.R"><img src="output/day10_prompting.png" width="250" alt="Map of every WNBA franchise city since 1997"></a><br>
+      <b>Day 10 · Prompting only</b><br>
+      WNBA franchises, past and present
+    </td>
+    <td align="center">
+      <a href="day11_sound.R"><img src="output/day11_sound.png" width="250" alt="NYC neighborhoods with red rings for helicopter noise complaints"></a><br>
+      <b>Day 11 · Senses: Sound</b><br>
+      Where NYC hears helicopters
+    </td>
+  </tr>
+</table>
+
+More maps get added here as the month goes on.
+
+## Tools
+
+- **R:** sf, ggplot2, terra, ggtext, ggrepel, showtext, patchwork
+- **Basketball data:** wehoop and sportyR
+- **ArcGIS Pro:** the Day 5 viewshed. `day05_sight.R` is only the data prep, and the map itself was made in Pro.
+
+## Data
+
+| Data | Used on |
+| :-- | :-- |
+| [NYC 311 Service Requests](https://data.cityofnewyork.us/Social-Services/311-Service-Requests-from-2020-to-Present/erm2-nwe9) | Days 1, 2, 3, 11 |
+| [NYC Neighborhood Tabulation Areas (2020)](https://data.cityofnewyork.us/resource/9nt8-h7nd) | Days 1, 2, 3, 11 |
+| [NYC Street Centerline](https://data.cityofnewyork.us/resource/inkn-q76z) | Day 2 |
+| ESPN shot data via [wehoop](https://wehoop.sportsdataverse.org/) | Days 4, 10 |
+| NYS DEC fire towers and Catskill Park boundary, NYS ITS 10 m elevation | Day 5 |
+| Forest Fire Lookout Association, NYS DEC, NYS ITS, AWS Terrain Tiles | Day 6 |
+| Natural Earth | Days 7, 10 |
+
+## How AI was used
+
+I used AI (Claude) to review scripts I wrote and suggest improvements or design ideas. I also used it when I got stuck with certain functions or to discover new methods. 
+
+## Running the scripts
+
+Each day has its own script, `dayNN_prompt.R`, and saves its map to `output/`. Raw data goes in `data/`, which isn't committed. Most scripts download what they need, and the 311 scripts read a saved 2025 pull (`data/nyc311_2025.csv`). The download step is commented out at the top of `day01_points.R`.

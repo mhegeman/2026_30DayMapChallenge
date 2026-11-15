@@ -60,6 +60,15 @@ Click a map to see the script behind it.
       Where NYC hears helicopters
     </td>
   </tr>
+  <tr>
+    <td align="center" width="33%">
+      <a href="day13_interactions.R"><img src="output/day13_interactions.png" width="250" alt="Dark half court with the Valkyries' assisted makes glowing violet"></a><br>
+      <b>Day 13 · Interactions</b><br>
+      Most Valkyries baskets started with a pass
+    </td>
+    <td width="33%"></td>
+    <td width="33%"></td>
+  </tr>
 </table>
 
 More maps get added here as the month goes on.
@@ -68,6 +77,7 @@ More maps get added here as the month goes on.
 
 - **R:** sf, ggplot2, terra, ggtext, ggrepel, showtext, patchwork
 - **Basketball data:** wehoop and sportyR
+- **Effects:** ggfx for the Day 13 glow
 - **ArcGIS Pro:** the Day 5 viewshed. `day05_sight.R` is only the data prep, and the map itself was made in Pro.
 
 ## Data
@@ -77,7 +87,7 @@ More maps get added here as the month goes on.
 | [NYC 311 Service Requests](https://data.cityofnewyork.us/Social-Services/311-Service-Requests-from-2020-to-Present/erm2-nwe9) | Days 1, 2, 3, 11 |
 | [NYC Neighborhood Tabulation Areas (2020)](https://data.cityofnewyork.us/resource/9nt8-h7nd) | Days 1, 2, 3, 11 |
 | [NYC Street Centerline](https://data.cityofnewyork.us/resource/inkn-q76z) | Day 2 |
-| ESPN shot data via [wehoop](https://wehoop.sportsdataverse.org/) | Days 4, 10 |
+| ESPN shot data via [wehoop](https://wehoop.sportsdataverse.org/) | Days 4, 10, 13 |
 | NYS DEC fire towers and Catskill Park boundary, NYS ITS 10 m elevation | Day 5 |
 | Forest Fire Lookout Association, NYS DEC, NYS ITS, AWS Terrain Tiles | Day 6 |
 | Natural Earth | Days 7, 10 |

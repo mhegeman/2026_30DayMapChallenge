@@ -71,7 +71,11 @@ Click a map to see the script behind it.
       <b>Day 13 · Interactions</b><br>
       Most Valkyries baskets started with a pass
     </td>
-    <td width="33%"></td>
+    <td align="center" width="33%">
+      <a href="day22_projections.R"><img src="output/day22_projections.png" width="250" alt="Greenland in three projections at the same scale: huge in Web Mercator, small in Equal Earth and Lambert azimuthal equal-area"></a><br>
+      <b>Day 22 · Projections</b><br>
+      Mercator draws Greenland 17 times too big
+    </td>
   </tr>
 </table>
 
@@ -95,7 +99,7 @@ More maps get added here as the month goes on.
 | ESPN shot data via [wehoop](https://wehoop.sportsdataverse.org/) | Days 4, 10, 13 |
 | NYS DEC fire towers and Catskill Park boundary, NYS ITS 10 m elevation | Day 5 |
 | Forest Fire Lookout Association, NYS DEC, NYS ITS, AWS Terrain Tiles | Day 6 |
-| Natural Earth | Days 7, 10 |
+| Natural Earth (Days 7 and 22 via the s2 package) | Days 7, 10, 22 |
 | [MapPLUTO](https://services5.arcgis.com/GfwWNkhOj9bNBqoJ/arcgis/rest/services/MAPPLUTO/FeatureServer/0) (NYC Dept. of City Planning), vacant lots | Day 8 |
 | [NYC Parks Properties](https://data.cityofnewyork.us/d/enfh-gkve) | Day 8 |
 | [Census TIGERweb 2020 blocks](https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Tracts_Blocks/MapServer/12), population | Day 8 |
